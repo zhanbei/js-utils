@@ -11,3 +11,18 @@ Common utils used in JavaScript projects, like React Single-page Applications, o
 This utils rely on [*NodeJs Core*](https://nodejs.org/) library and are written in [*ECMA Script 6*](https://github.com/lukehoban/es6features).
 
 It is ready to go on the **server side** with NodeJs, and for the **client side**, you'd better compile and pack it before release.
+
+## Installation
+
+Clone the repository to your project and you are ready to go.
+
+```bash
+# Clone repository as submodule to ./utils folder.
+git submodule add https://github.com/zhanbei/js-utils ./utils
+
+# Add changed files to git and ready to commit.
+git add utils .gitmodules
+
+# Commit your change.
+git commit -m 'Added submodule as utils from https://github.com/zhanbei/js-utils.'
+```
