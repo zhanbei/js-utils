@@ -27,11 +27,12 @@ class EventListener {
 		if (index > -1) {this.mListeners.splice(index, 1);}
 	}
 
-	triggerEvent() {
-		this.mListeners.map(listener => listener && listener());
+	// Trigger the listeners with the received params.
+	triggerEvent(...params) {
+		this.mListeners.map(listener => listener && listener(...params));
 		const temp = this.mTempListeners;
 		this.mTempListeners = [];
-		temp.map(listener => listener && listener());
+		temp.map(listener => listener && listener(...params));
 	}
 }
 
