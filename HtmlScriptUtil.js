@@ -10,3 +10,13 @@ exports.loadAndExecuteScript = (scriptUrl, callback) => {
 	script.src = scriptUrl;
 	document.getElementsByTagName('head')[0].appendChild(script);
 };
+
+// @see #exports.loadAndExecuteScript();
+exports.loadStyleAsynchronously = (styleUrl, callback) => {
+	const link = document.createElement('link');
+	link.rel = 'stylesheet';
+	link.async = true;
+	link.onload = callback;
+	link.href = styleUrl;
+	document.getElementsByTagName('head')[0].appendChild(link);
+};
