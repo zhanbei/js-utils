@@ -34,15 +34,17 @@ const LoggerSilent = {
 	logger: null,
 };
 
+// All valid loggers with their levels being set from 0 to 5 in order of [0, 1, 2, 3, 4, 5].
+const LOGGERS = [LoggerVerbose, LoggerDebug, LoggerInfo, LoggerWarning, LoggerWarning, LoggerSilent];
 
-class ConsoleLogger {
+module.exports = () => class ConsoleLogger {
 	static LoggerDebug = LoggerDebug;
 	static LoggerInfo = LoggerInfo;
 	static LoggerWarning = LoggerWarning;
 	static LoggerError = LoggerError;
 	static LoggerSilent = LoggerSilent;
 	// Use the verbose logger by default.
-	static LoggerLevel = LoggerVerbose;
+	static CurrentLoggerLevel = LoggerVerbose.level;
 
 	constructor(tag) {
 		this.mTag = tag;
@@ -50,9 +52,16 @@ class ConsoleLogger {
 
 	mTag = 'Logger';
 
+	// Set level of logging; level may be one of [0, 1, 2, 3, 4, 5].
+	static setMinLoggingLevel(level) {
+		if (level.level) {level = level.level;}
+		const logger = LOGGERS.find(logger => logger.level === level) || LoggerVerbose;
+		ConsoleLogger.CurrentLoggerLevel = logger.level;
+	};
+
 	// @see https://developer.mozilla.org/en-US/docs/Web/API/console
 	_log(logger, ...msgs) {
-		if (ConsoleLogger.LoggerLevel.level > logger.level) {return;}
+		if (logger.level < ConsoleLogger.CurrentLoggerLevel) {return;}
 		logger.logger('-> [%s] [%s] [#%s]', new Date().toLocaleTimeString(), logger.tag, this.mTag, ...msgs);
 	}
 
@@ -75,6 +84,4 @@ class ConsoleLogger {
 	error(...msgs) {
 		this._log(LoggerError, msgs);
 	}
-}
-
-module.exports = ConsoleLogger;
+};
