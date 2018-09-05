@@ -4,7 +4,6 @@ const assert = require('assert');
 const newConsoleLogger = require('../ConsoleLogger');
 const ConsoleLogger = newConsoleLogger();
 ConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerVerbose);
-const ErrorUtil = require('../ErrorUtil');
 const ClockUtils = require('../ClockUtil');
 const ReadableIntervalUtil = require('../IntervalTimeUtil');
 
@@ -14,7 +13,6 @@ function testClockUtil() {
 	ClockUtils.waitForALittleWhile(() => Math.random() > 0.1, 500, 5, () => logger.log('Waiting')).then(() => {
 		logger.info('Finished');
 	}).catch(ex => {
-		ErrorUtil.handleError('Waiting for clock timed out!', ex);
 		logger.alert('Waiting for clock timed out!', ex);
 	});
 }
