@@ -38,6 +38,7 @@ const LoggerSilent = {
 const LOGGERS = [LoggerVerbose, LoggerDebug, LoggerInfo, LoggerWarning, LoggerWarning, LoggerSilent];
 
 module.exports = () => class ConsoleLogger {
+	static LoggerVerbose = LoggerVerbose;
 	static LoggerDebug = LoggerDebug;
 	static LoggerInfo = LoggerInfo;
 	static LoggerWarning = LoggerWarning;
