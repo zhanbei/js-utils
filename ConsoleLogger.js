@@ -37,21 +37,10 @@ const LoggerSilent = {
 // All valid loggers with their levels being set from 0 to 5 in order of [0, 1, 2, 3, 4, 5].
 const LOGGERS = [LoggerVerbose, LoggerDebug, LoggerInfo, LoggerWarning, LoggerWarning, LoggerSilent];
 
-module.exports = () => class ConsoleLogger {
-	static LoggerVerbose = LoggerVerbose;
-	static LoggerDebug = LoggerDebug;
-	static LoggerInfo = LoggerInfo;
-	static LoggerWarning = LoggerWarning;
-	static LoggerError = LoggerError;
-	static LoggerSilent = LoggerSilent;
-	// Use the verbose logger by default.
-	static CurrentLoggerLevel = LoggerVerbose.level;
-
-	constructor(tag) {
+const newConsoleLogger = () => class ConsoleLogger {
+	constructor(tag = 'DefaultLogger') {
 		this.mTag = tag;
 	}
-
-	mTag = 'Logger';
 
 	// Set level of logging; level may be one of [0, 1, 2, 3, 4, 5].
 	static setMinLoggingLevel(level) {
@@ -83,6 +72,26 @@ module.exports = () => class ConsoleLogger {
 	}
 
 	error(...msgs) {
-		this._log(LoggerError, msgs);
+		this._log(LoggerError, ...msgs);
 	}
+
+	// Alert the notice(which is the first param of the error messages) and logging out the error messages.
+	alert(notice, ...msgs) {
+		this._log(LoggerError, notice, ...msgs);
+		if (typeof alert === 'function') {alert(notice);}
+	}
+};
+
+module.exports = () => {
+	const ConsoleLogger = newConsoleLogger();
+	// Initialize static variables.
+	ConsoleLogger.LoggerVerbose = LoggerVerbose;
+	ConsoleLogger.LoggerDebug = LoggerDebug;
+	ConsoleLogger.LoggerInfo = LoggerInfo;
+	ConsoleLogger.LoggerWarning = LoggerWarning;
+	ConsoleLogger.LoggerError = LoggerError;
+	ConsoleLogger.LoggerSilent = LoggerSilent;
+	// Use the verbose logger by default.
+	ConsoleLogger.CurrentLoggerLevel = LoggerVerbose.level;
+	return ConsoleLogger;
 };

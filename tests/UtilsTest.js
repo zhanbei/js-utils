@@ -1,20 +1,27 @@
 'use strict';
 
 const assert = require('assert');
+const newConsoleLogger = require('../ConsoleLogger');
+const ConsoleLogger = newConsoleLogger();
+ConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerVerbose);
+const ErrorUtil = require('../ErrorUtil');
 const ClockUtils = require('../ClockUtil');
-const ErrorUtils = require('../ErrorUtil');
 const ReadableIntervalUtil = require('../IntervalTimeUtil');
 
+const logger = new ConsoleLogger('Testing');
 
 function testClockUtil() {
-	ClockUtils.waitForALittleWhile(() => true, 1500, 6, () => console.log('Waiting')).then(() => {
-		console.log('Finished');
-	}).catch(ex => ErrorUtils.handleError('', ex));
+	ClockUtils.waitForALittleWhile(() => Math.random() > 0.1, 500, 5, () => logger.log('Waiting')).then(() => {
+		logger.info('Finished');
+	}).catch(ex => {
+		ErrorUtil.handleError('Waiting for clock timed out!', ex);
+		logger.alert('Waiting for clock timed out!', ex);
+	});
 }
 
 function testIntervalTimeUtil() {
 	const test = (interval, expected) => {
-		assert.strictEqual(ReadableIntervalUtil.getReadableIntervalTime(interval), expected, `Unexpected human-readable string: [${expected}] from given interval: [${interval}].`)
+		assert.strictEqual(ReadableIntervalUtil.getReadableIntervalTime(interval), expected, `Unexpected human-readable string: [${expected}] from given interval: [${interval}].`);
 	};
 	test(10, '10 Seconds');
 	test(60, '1 Minute');
