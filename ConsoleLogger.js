@@ -35,7 +35,7 @@ const LoggerSilent = {
 };
 
 // All valid loggers with their levels being set from 0 to 5 in order of [0, 1, 2, 3, 4, 5].
-const LOGGERS = [LoggerVerbose, LoggerDebug, LoggerInfo, LoggerWarning, LoggerWarning, LoggerSilent];
+const LOGGERS = [LoggerVerbose, LoggerDebug, LoggerInfo, LoggerWarning, LoggerError, LoggerSilent];
 
 const newConsoleLogger = () => class ConsoleLogger {
 	constructor(tag = 'DefaultLogger') {
@@ -45,7 +45,7 @@ const newConsoleLogger = () => class ConsoleLogger {
 	// Set level of logging; level may be one of [0, 1, 2, 3, 4, 5].
 	static setMinLoggingLevel(level) {
 		if (level.level) {level = level.level;}
-		const logger = LOGGERS.find(logger => logger.level === level) || LoggerVerbose;
+		const logger = LOGGERS.find(logger => logger.level === level) || LoggerError;
 		ConsoleLogger.CurrentLoggerLevel = logger.level;
 	};
 
