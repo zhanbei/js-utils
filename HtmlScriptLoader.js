@@ -10,3 +10,15 @@ exports.loadAndExecuteScript = (scriptUrl, callback) => {
 	script.src = scriptUrl;
 	document.getElementsByTagName('head')[0].appendChild(script);
 };
+
+exports.loadScript = (scriptUrl) => {
+	return new Promise((resolve, reject) => {
+		const script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = scriptUrl;
+		script.async = true;
+		script.onload = resolve;
+		script.onerror = reject;
+		document.getElementsByTagName('head')[0].appendChild(script);
+	});
+};
