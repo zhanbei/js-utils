@@ -1,26 +1,29 @@
 'use strict';
 
+import {newConsoleLogger} from '../ConsoleLogger';
+import {waitForALittleWhile} from '../ClockUtil';
+import {getReadableIntervalTime} from '../IntervalTimeUtil';
+import {EventListener} from '../EventListener';
+
 const assert = require('assert');
-const newConsoleLogger = require('../ConsoleLogger');
 const ConsoleLogger = newConsoleLogger();
 ConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerVerbose);
-const ClockUtils = require('../ClockUtil');
-const ReadableIntervalUtil = require('../IntervalTimeUtil');
 
 const logger = new ConsoleLogger('Testing');
 
 function testClockUtil() {
-	ClockUtils.waitForALittleWhile(() => Math.random() > 0.1, 500, 5, () => logger.log('Waiting')).then(() => {
+	waitForALittleWhile(() => Math.random() > 0.1, 500, 5, () => logger.log('Waiting')).then(() => {
 		logger.info('Finished');
-	}).catch(ex => {
+	}).catch((ex: any) => {
 		logger.alert('Waiting for clock timed out!', ex);
 	});
 }
 
 function testIntervalTimeUtil() {
-	const test = (interval, expected) => {
-		assert.strictEqual(ReadableIntervalUtil.getReadableIntervalTime(interval), expected, `Unexpected human-readable string: [${expected}] from given interval: [${interval}].`);
+	const test = (interval: number, expected: string) => {
+		assert.strictEqual(getReadableIntervalTime(interval), expected, `Unexpected human-readable string: [${expected}] from given interval: [${interval}].`);
 	};
+	// assert.strictEqual('a', 'b', 'Passing a failed condition to test the assert functionality.');
 	test(10, '10 Seconds');
 	test(60, '1 Minute');
 	test(65, '1 Minute and 5 Seconds');
@@ -33,5 +36,16 @@ function testIntervalTimeUtil() {
 	test(13234232890, '425 Years and 5 Months');
 }
 
+const testEventListener = () => {
+	const listener = new EventListener();
+	listener.addListener((param: any) => console.log('Event being triggered for a permanent listener!', param));
+	listener.addTempListener((param: any) => console.log('Event being triggered for a temporary listener!', param));
+	listener.addListener((param: any) => console.log('Event being triggered for another permanent listener!', param));
+	listener.addTempListener((param: any) => console.log('Event being triggered for another temporary listener!', param));
+	listener.triggerEvent('first event!');
+	listener.triggerEvent('second event!');
+};
+
 testClockUtil();
 testIntervalTimeUtil();
+testEventListener();

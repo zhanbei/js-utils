@@ -10,19 +10,19 @@
  * @param intervalFunc{function|null} function to be executed before each waiting cycle.
  * @returns {Promise<null>} JavaScript Promise.
  */
-exports.waitForALittleWhile = (isKeepWaitingFunc, interval, times, intervalFunc) => {
+export const waitForALittleWhile = (isKeepWaitingFunc: () => any, interval: number, times: number, intervalFunc: () => any) => {
 	return new Promise((resolve, reject) => {
 		let i = 0;
 		const fn = () => {
 			if (isKeepWaitingFunc()) {
 				if (i >= times) {
 					reject('Timeout');
-					return
+					return;
 				}
 				if (intervalFunc) {intervalFunc();}
 				i++;
 				setTimeout(fn, interval || 200);
-				return
+				return;
 			}
 			resolve();
 		};

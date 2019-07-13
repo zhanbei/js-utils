@@ -1,6 +1,6 @@
 'use strict';
 
-const EventListener = require('../EventListener');
+import {EventListener} from '../EventListener';
 
 const mEventListener = new EventListener();
 

@@ -1,8 +1,8 @@
 'use strict';
 
 // Connect b to the end of a while b is not null.
-const connect = (a, b) => b ? `${a} and ${b}` : a;
-const addUnit = (value, unit) => value === 1 ? `${value} ${unit}` : `${value} ${unit}s`;
+const connect = (a: string, b: string) => b ? `${a} and ${b}` : a;
+const addUnit = (value: number, unit: string) => value === 1 ? `${value} ${unit}` : `${value} ${unit}s`;
 
 // Get the human readable string from a interval time, which consists of (max)two different
 //  units(seconds/minutes/hours/days/...), like:
@@ -16,7 +16,7 @@ const addUnit = (value, unit) => value === 1 ? `${value} ${unit}` : `${value} ${
 // - 132890 -> 1 Day and 12 Hours
 // - 143920890 -> 4 Years and 7 Months
 // - 13234232890 -> 425 Years and 5 Months
-exports.getReadableIntervalTime = (value) => {
+export const getReadableIntervalTime = (value: number) => {
 	const seconds = value % 60 === 0 ? '' : addUnit(value % 60, 'Second');
 	value = Math.floor(value / 60);
 	if (value <= 0) {return seconds;}

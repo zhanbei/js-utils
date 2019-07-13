@@ -2,7 +2,7 @@
 
 // Load and execute a script in a html document asynchronously.
 // @see https://stackoverflow.com/questions/8578617/inject-a-script-tag-with-remote-src-and-wait-for-it-to-execute
-exports.loadAndExecuteScript = (scriptUrl, callback) => {
+export const loadAndExecuteScript = (scriptUrl: string, callback: (...params: any[]) => any) => {
 	const script = document.createElement('script');
 	script.type = 'text/javascript';
 	script.async = true;
@@ -11,7 +11,7 @@ exports.loadAndExecuteScript = (scriptUrl, callback) => {
 	document.getElementsByTagName('head')[0].appendChild(script);
 };
 
-exports.loadScript = (scriptUrl) => {
+export const loadScript = (scriptUrl: string) => {
 	return new Promise((resolve, reject) => {
 		const script = document.createElement('script');
 		script.type = 'text/javascript';
