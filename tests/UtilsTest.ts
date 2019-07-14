@@ -1,13 +1,15 @@
 'use strict';
 
-import {newConsoleLogger} from '../ConsoleLogger';
+import * as assert from 'assert';
+import {IConsoleLogger, newConsoleLogger} from '../ConsoleLogger';
 import {waitForALittleWhile} from '../ClockUtil';
 import {getReadableIntervalTime} from '../IntervalTimeUtil';
 import {EventListener} from '../EventListener';
 
-const assert = require('assert');
 const ConsoleLogger = newConsoleLogger();
 ConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerVerbose);
+const StrictConsoleLogger = newConsoleLogger();
+StrictConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerWarning);
 
 const logger = new ConsoleLogger('Testing');
 
@@ -38,14 +40,31 @@ function testIntervalTimeUtil() {
 
 const testEventListener = () => {
 	const listener = new EventListener();
-	listener.addListener((param: any) => console.log('Event being triggered for a permanent listener!', param));
-	listener.addTempListener((param: any) => console.log('Event being triggered for a temporary listener!', param));
-	listener.addListener((param: any) => console.log('Event being triggered for another permanent listener!', param));
-	listener.addTempListener((param: any) => console.log('Event being triggered for another temporary listener!', param));
+	listener.addListener((param: any) => logger.log('Event being triggered for a permanent listener!', param));
+	listener.addTempListener((param: any) => logger.log('Event being triggered for a temporary listener!', param));
+	listener.addListener((param: any) => logger.log('Event being triggered for another permanent listener!', param));
+	listener.addTempListener((param: any) => logger.log('Event being triggered for another temporary listener!', param));
 	listener.triggerEvent('first event!');
 	listener.triggerEvent('second event!');
+};
+
+const testLoggers = () => {
+	const vl = new ConsoleLogger('Verbose Logger');
+	const sl = new StrictConsoleLogger('Strict Logger');
+	const event = 'A event to print in different logging levels.';
+	const printInDifferentLoggingLevels = (logger: IConsoleLogger, event: string) => {
+		logger.log(event);
+		logger.debug(event);
+		logger.info(event);
+		logger.warn(event);
+		logger.error(event);
+		logger.alert(event);
+	};
+	printInDifferentLoggingLevels(vl, event);
+	printInDifferentLoggingLevels(sl, event);
 };
 
 testClockUtil();
 testIntervalTimeUtil();
 testEventListener();
+testLoggers();

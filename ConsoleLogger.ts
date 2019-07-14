@@ -5,46 +5,79 @@
 interface ILogger {
 	level: number;
 	tag: string;
-	print?: (...params: any[]) => any;
+	print?: Function;
 }
 
-const newLogger = (level: number, tag: string, print: () => any): ILogger => ({level: level, tag: tag, print: print});
+let _id = 0;
+const newLogger = (tag: string, print?: Function): ILogger => ({level: _id++, tag: tag, print: print});
 
-const LoggerVerbose = newLogger(0, 'VERBOSE', console.log);
-const LoggerDebug = newLogger(1, ' DEBUG ', console.log);
-const LoggerInfo = newLogger(2, ' INFOR ', console.log);
-const LoggerWarning = newLogger(3, 'WARNING', console.log);
-const LoggerError = newLogger(4, ' ERROR ', console.log);
-const LoggerSilent = newLogger(5, 'SILENT', console.log);
+// Consider to export all these default logger.
+const LoggerVerbose = newLogger('VERBOSE', console.log);
+const LoggerDebug = newLogger(' DEBUG ', console.info);
+const LoggerInfo = newLogger(' INFOR ', console.info);
+const LoggerWarning = newLogger('WARNING', console.warn);
+const LoggerError = newLogger(' ERROR ', console.error);
+const LoggerAlert = newLogger(' ALERT ', console.error);
+const LoggerSilent = newLogger('SILENT', undefined);
 
-// All valid loggers with their levels being set from 0 to 5 in order of [0, 1, 2, 3, 4, 5].
-const LOGGERS = [LoggerVerbose, LoggerDebug, LoggerInfo, LoggerWarning, LoggerError, LoggerSilent];
+export interface IConsoleLogger {
+	// Declare the Static Members
+	// @see https://stackoverflow.com/questions/13955157/how-to-define-static-property-in-typescript-interface
+	// LoggerVerbose: ILogger;
+	// LoggerDebug: ILogger;
+	// LoggerInfo: ILogger;
+	// LoggerWarning: ILogger;
+	// LoggerError: ILogger;
+	// LoggerSilent: ILogger;
+	// CurrentLoggerLevel: number;
+	log: Function;
+	debug: Function;
+	info: Function;
+	warn: Function;
+	error: Function;
+	alert: Function;
+}
 
-export const newConsoleLogger = () => class ConsoleLogger {
+// Use Case:
+// By calling this function, you get a brand-new logger constructor with your own preferences.
+// Hence you create your own logger instances with different tags while share the same set of differences.
+// Use the verbose logger by default.
+export const newConsoleLogger = (loggingLevel: number = LoggerVerbose.level) => class ConsoleLogger implements IConsoleLogger {
 	static LoggerVerbose = LoggerVerbose;
 	static LoggerDebug = LoggerDebug;
 	static LoggerInfo = LoggerInfo;
 	static LoggerWarning = LoggerWarning;
 	static LoggerError = LoggerError;
+	static LoggerAlert = LoggerAlert;
 	static LoggerSilent = LoggerSilent;
-	// Use the verbose logger by default.
-	static CurrentLoggerLevel = LoggerVerbose.level;
+	static CurrentLoggerLevel = loggingLevel;
 
-	mTag: string;
+	private readonly mTag: string;
 
-	constructor(tag = 'DefaultLogger') {
+	// A tag is required for loggers.
+	constructor(tag: string) {
 		this.mTag = tag;
 	}
 
 	// Set level of logging; level may be one of [0, 1, 2, 3, 4, 5].
 	static setMinLoggingLevel(param: number | ILogger) {
 		const level = typeof param === 'object' ? param.level : param;
-		const logger = LOGGERS.find(logger => logger.level === level) || LoggerError;
-		ConsoleLogger.CurrentLoggerLevel = logger.level;
+		// All valid loggers with their levels being set in order.
+		const LOGGERS = [ConsoleLogger.LoggerVerbose, ConsoleLogger.LoggerDebug, ConsoleLogger.LoggerInfo, ConsoleLogger.LoggerWarning, ConsoleLogger.LoggerError, ConsoleLogger.LoggerAlert, ConsoleLogger.LoggerSilent];
+		const logger = LOGGERS.find(logger => logger.level === level);
+		if (!logger) {
+			console.error('Failed to find the expected logger by the given logging level, hence using the #LoggerError as the preferred logger.');
+			ConsoleLogger.CurrentLoggerLevel = LoggerError.level;
+		} else {
+			ConsoleLogger.CurrentLoggerLevel = logger.level;
+		}
 	};
 
+	// The overall logging method.
+	// A timer printing empty lines may be used to separate noncontinuous events.
+	// The continuous events may be grouped together with a same timestamps.
 	// @see https://developer.mozilla.org/en-US/docs/Web/API/console
-	_log(logger: ILogger, ...msgs: any[]) {
+	private _log(logger: ILogger, ...msgs: any[]) {
 		if (!logger.print) {return;}
 		if (logger.level < ConsoleLogger.CurrentLoggerLevel) {return;}
 		logger.print('-> [%s] [%s] [#%s]', new Date().toLocaleTimeString(), logger.tag, this.mTag, ...msgs);
@@ -72,7 +105,7 @@ export const newConsoleLogger = () => class ConsoleLogger {
 
 	// Alert the notice(which is the first param of the error messages) and logging out the error messages.
 	alert(notice: string, ...msgs: any[]) {
-		this._log(LoggerError, notice, ...msgs);
+		this._log(LoggerAlert, notice, ...msgs);
 		if (typeof alert === 'function') {alert(notice);}
 	}
 };
