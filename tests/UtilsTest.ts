@@ -9,7 +9,7 @@ import {EventListener} from '../EventListener';
 const ConsoleLogger = newConsoleLogger();
 ConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerVerbose);
 const StrictConsoleLogger = newConsoleLogger();
-StrictConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerWarning);
+StrictConsoleLogger.setMinLoggingLevel(StrictConsoleLogger.LoggerWarning);
 
 const logger = new ConsoleLogger('Testing');
 
