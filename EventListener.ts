@@ -4,14 +4,14 @@
  * The event listener class to listen and trigger events.
  */
 export class EventListener {
-	private mListeners: ((...params: any[]) => any)[] = [];
-	private mTempListeners: ((...params: any[]) => any)[] = [];
+	private mListeners: Function[] = [];
+	private mTempListeners: Function[] = [];
 
 	constructor() {
 		['addListener', 'addTempListener', 'removeListener', 'triggerEvent'].map(method => this[method] = this[method].bind(this));
 	}
 
-	addListener(listener: (...params:any[]) => any, isTempListener?: boolean) {
+	addListener(listener: Function, isTempListener?: boolean) {
 		if (isTempListener) {
 			this.mTempListeners.push(listener);
 		} else {
@@ -19,11 +19,11 @@ export class EventListener {
 		}
 	}
 
-	addTempListener(listener: (...params: any[]) => any) {
+	addTempListener(listener: Function) {
 		return this.addListener(listener, true);
 	}
 
-	removeListener(listener: (...params: any[]) => any) {
+	removeListener(listener: Function) {
 		let index = this.mListeners.indexOf(listener);
 		if (index > -1) {this.mListeners.splice(index, 1);}
 	}
