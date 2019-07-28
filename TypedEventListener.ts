@@ -6,7 +6,7 @@
 //
 // type ListenerCallback = Function;
 // type Listener_Callback = ((...params: [T, T2, T3]) => any)
-export class EventListener<T = void, T2 = void, T3 = void> {
+export class TypedEventListener<T = void, T2 = void, T3 = void> {
 	private mListeners: ((...params: [T, T2, T3]) => any)[] = [];
 	private mTempListeners: ((...params: [T, T2, T3]) => any)[] = [];
 

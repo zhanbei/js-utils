@@ -4,7 +4,7 @@ import * as assert from 'assert';
 import {IConsoleLogger, newConsoleLogger} from '../ConsoleLogger';
 import {waitForALittleWhile} from '../ClockUtil';
 import {getReadableIntervalTime} from '../IntervalTimeUtil';
-import {EventListener} from '../EventListener';
+import {TypedEventListener} from '../TypedEventListener';
 
 const ConsoleLogger = newConsoleLogger();
 ConsoleLogger.setMinLoggingLevel(ConsoleLogger.LoggerVerbose);
@@ -39,7 +39,7 @@ function testIntervalTimeUtil() {
 }
 
 const testEventListener = () => {
-	const listener = new EventListener<string>();
+	const listener = new TypedEventListener<string>();
 	listener.addListener((param: any) => logger.log('Event being triggered for a permanent listener!', param));
 	listener.addTempListener((param: any) => logger.log('Event being triggered for a temporary listener!', param));
 	listener.addListener((param: any) => logger.log('Event being triggered for another permanent listener!', param));

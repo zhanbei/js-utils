@@ -1,8 +1,8 @@
 'use strict';
 
-import {EventListener} from '../EventListener';
+import {TypedEventListener} from '../TypedEventListener';
 
-const mEventListener = new EventListener<string, number>();
+const mEventListener = new TypedEventListener<string, number>();
 
 mEventListener.addListener(() => {
 	console.log('A permanent event is triggered:');
