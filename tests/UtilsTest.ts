@@ -39,7 +39,7 @@ function testIntervalTimeUtil() {
 }
 
 const testEventListener = () => {
-	const listener = new EventListener();
+	const listener = new EventListener<string>();
 	listener.addListener((param: any) => logger.log('Event being triggered for a permanent listener!', param));
 	listener.addTempListener((param: any) => logger.log('Event being triggered for a temporary listener!', param));
 	listener.addListener((param: any) => logger.log('Event being triggered for another permanent listener!', param));
