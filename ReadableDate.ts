@@ -2,18 +2,22 @@
 
 import {getReadableIntervalTime} from './IntervalTimeUtil';
 
+type ParamDate = number | string | Date | undefined;
+const newDate = (date: ParamDate): Date =>
+	date ? new Date(date) : new Date();
+
 const addLeadingZeros = (v: number, size: number): string => {
 	const s = '000000000' + v;
 	return s.substr(s.length - size);
 };
 
-const formatAsMonthDay = (timestamp: string | number | Date, seperator: string = '-') => {
-	const d = new Date(timestamp);
+const formatAsMonthDay = (date?: ParamDate, seperator: string = '-') => {
+	const d = newDate(date);
 	return `${addLeadingZeros(d.getMonth() + 1, 2)}${seperator}${addLeadingZeros(d.getDate(), 2)}`;
 };
 
-const formatAsHourMinute = (timestamp: string | number | Date, seperator: string = ':') => {
-	const d = new Date(timestamp);
+const formatAsHourMinute = (date?: ParamDate, seperator: string = ':') => {
+	const d = newDate(date);
 	return `${addLeadingZeros(d.getHours(), 2)}${seperator}${addLeadingZeros(d.getMinutes(), 2)}`;
 };
 
