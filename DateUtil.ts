@@ -14,17 +14,32 @@ const getMinutesOfDay = (d: Date): number =>
 const getUTCMinutesOfDay = (d: Date): number =>
 	d.getUTCHours() * 60 + d.getUTCMinutes();
 
+const MINUTE_MILLISECONDS = 60 * 1000;
 const DAY_MILLISECONDS = 24 * 3600 * 1000;
 
 // Get the number ID of a day.
 const getDayId = (date?: ParamDate): number => {
+	const d = newDate(date);
+	const nd = new Date(+d - d.getTimezoneOffset() * MINUTE_MILLISECONDS);
+	nd.setUTCHours(0, 0, 0, 0);
+	return Math.floor(+nd / DAY_MILLISECONDS);
+};
+
+// Get the number ID of a UTC day.
+const getUTCDayId = (date?: ParamDate): number => {
 	const d = newDate(date);
 	d.setUTCHours(0, 0, 0, 0);
 	return Math.floor(+d / DAY_MILLISECONDS);
 };
 
 // Get the UTC date from given dayId.
+// Tue Jun 16 2020 00:00:00 GMT+0800 (China Standard Time)
 const fromDayId = (dayId: number): Date =>
+	new Date(dayId * DAY_MILLISECONDS + new Date().getTimezoneOffset() * MINUTE_MILLISECONDS);
+
+// Get the UTC date from given dayId.
+// Tue Jun 16 2020 08:00:00 GMT+0800 (China Standard Time)
+const fromUTCDayId = (dayId: number): Date =>
 	new Date(dayId * DAY_MILLISECONDS);
 
 // Get the first day of the week, when the first day of a week is monday.
@@ -48,10 +63,13 @@ export const DateUtil = {
 	getMinutesOfDay,
 	getUTCMinutesOfDay,
 
+	MINUTE_MILLISECONDS,
 	DAY_MILLISECONDS,
 
 	getDayId,
+	getUTCDayId,
 	fromDayId,
+	fromUTCDayId,
 	getMonday,
 	getWeekId,
 	fromWeekId,
